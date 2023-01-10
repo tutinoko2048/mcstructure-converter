@@ -91,9 +91,9 @@ export default function Home() {
       <div id="error"></div>
       <fieldset className={styles.fieldset} id="result">
         <div className={styles.form}>
-          Name:<input type="text" id="fileName" defaultValue="generated" style={{ "margin-left": "0.5rem" }}/>.mcstructure
+          Name:<input type="text" id="fileName" defaultValue="generated" style={{ "marginLeft": "0.5rem" }}/>.mcstructure
           <br/>
-          <input type="button" value="Generate mcstructure!" onClick={generateStructure} style={{ "margin-top": "0.5rem"}}/>
+          <input type="button" value="Generate mcstructure!" onClick={generateStructure} style={{ "marginTop": "0.5rem"}}/>
         </div>
       </fieldset>
       </main>
