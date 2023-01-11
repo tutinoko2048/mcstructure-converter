@@ -104,7 +104,9 @@ export default function Home() {
           <br/>
           <input type="button" value="Generate mcstructure!" onClick={generateStructure} style={{ "marginTop": "0.5rem"}}/>
         </div>
-      </fieldset>
+      </fieldset><br/>
+      <br/>
+      <a href="https://github.com/tutinoko2048/mcstructure-converter">Github</a>
       </main>
     </>
   )
