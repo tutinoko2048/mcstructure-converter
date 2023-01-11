@@ -39,7 +39,7 @@ function generateStructure() {
   const data = document.getElementById('preview').value;
   const errorPanel = document.getElementById('error');
   errorPanel.innerHTML = '';
-  if (!data) return errorPanel.innerHTML = 'Error: JSONを入力してください';
+  if (!data) return errorPanel.innerHTML = `Error: Please put valid JSON`;
   let structure;
   try {
     structure = nbt.writeUncompressed(JSON.parse(data), 'little');
@@ -53,6 +53,15 @@ function generateStructure() {
   a.href = url;
   a.download = document.getElementById('fileName').value + '.mcstructure';
   a.click();
+}
+
+function copy() {
+  const text = document.getElementById('preview').value;
+  if (!text) return alert('There is nothing to copy in Preview!');
+  navigator.clipboard.writeText(text);
+  const copied = document.getElementById('copied')
+  copied.innerHTML = 'copied!';
+  setTimeout(() => copied.innerHTML = '', 3*1000);
 }
 
 export default function Home() {
@@ -81,12 +90,12 @@ export default function Home() {
           </div>
         </div>
         
-        <input type="file" id="input" onChange={onChange}/><br/>
+        <input type="file" id="input" onChange={onChange} style={{ "marginBottom": "0.5rem"}} /><br/>
       </fieldset><br/>
       
       <div className={styles.label}>Preview</div><br />
-      <textarea id="preview" className={styles.textarea}></textarea>
-      <br/>
+      <textarea id="preview" className={styles.textarea}></textarea><br/>
+      <input type="button" value="Copy" onClick={copy} /><div id="copied"></div>
       <br/>
       <div id="error"></div>
       <fieldset className={styles.fieldset} id="result">
