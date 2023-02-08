@@ -1,10 +1,10 @@
 import Head from 'next/head';
-//import Image from 'next/image';
 import styles from '../styles/Home.module.css';
-//import axios from 'axios';
-//import { Buffer } from 'buffer';
 import * as nbt from 'prismarine-nbt';
-
+import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import IosShareIcon from '@mui/icons-material/IosShare';
+import FileOpenIcon from '@mui/icons-material/FileOpen';
 
 function onChange() {
   const isStructure = document.getElementById('mcstructure').checked;
@@ -21,14 +21,15 @@ function onChange() {
 }
 
 async function loadStructure(reader) {
+  const preview = document.getElementById('preview');
   let value;
   try {
-    const { parsed } = await  nbt.parse(Buffer.from(reader.result));
+    const { parsed } = await nbt.parse(Buffer.from(reader.result));
     value = JSON.stringify(parsed, null, 2);
   } catch(e) {
     value = String(e);
   }
-  document.getElementById('preview').value = value;
+  preview.value = value;
 }
 
 function loadJson(reader) {
@@ -51,7 +52,7 @@ function generateStructure() {
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = document.getElementById('fileName').value + '.mcstructure';
+  a.download = document.getElementById('fileName').value;
   a.click();
 }
 
@@ -78,31 +79,41 @@ export default function Home() {
       
       <div className={styles.label}>Select file</div><br/>  
       <fieldset className={styles.fieldset}>
-        <div className={`${styles.form} ${styles.select}`}>
-          Type:
-          <div className="type">
-            <input type="radio" onChange={onChange} id="mcstructure" name="type" defaultChecked/>
-            <label htmlFor="mcstructure">mcstructure</label>
-          </div>
-          <div className="type">
-            <input type="radio" onChange={onChange} id="json" name="type" />
-            <label htmlFor="json">JSON</label>
-          </div>
-        </div>
+        <FormControl>
+          <FormLabel>Type</FormLabel>
+          <RadioGroup defaultValue="mcstructure" onChange={onChange} id="select" row>
+            <FormControlLabel value="mcstructure" control={<Radio id="mcstructure"/>} label="mcstructure"/>
+            <FormControlLabel value="json" control={<Radio id="json"/>} label="JSON" />
+          </RadioGroup>
+        </FormControl>
         
-        <input type="file" id="input" onChange={onChange} style={{ "marginBottom": "0.5rem"}} /><br/>
+        <Button variant="contained"  component="label" startIcon={<FileOpenIcon/>}>
+          Select
+          <input type="file" id="input" onChange={onChange} hidden/>
+        </Button>
       </fieldset><br/>
       
       <div className={styles.label}>Preview</div><br />
       <textarea id="preview" className={styles.textarea}></textarea><br/>
-      <input type="button" value="Copy" onClick={copy} /><div id="copied"></div>
+      <Button variant="contained" onClick={copy} startIcon={<ContentCopyIcon/>}>
+        Copy
+      </Button><div id="copied"></div>
+      
       <br/>
       <div id="error"></div>
       <fieldset className={styles.fieldset} id="result">
         <div className={styles.form}>
-          Name:<input type="text" id="fileName" defaultValue="generated" style={{ "marginLeft": "0.5rem" }}/>.mcstructure
+          <TextField
+            id="fileName"
+            defaultValue="generated.mcstructure"
+            label="File name"
+            variant="outlined"
+            size="small"
+          />
           <br/>
-          <input type="button" value="Generate mcstructure!" onClick={generateStructure} style={{ "marginTop": "0.5rem"}}/>
+          <Button variant="contained" onClick={generateStructure} startIcon={<IosShareIcon/>} style={{ marginTop: "0.5rem"}}>
+            Generate
+          </Button>
         </div>
       </fieldset><br/>
       <br/>
