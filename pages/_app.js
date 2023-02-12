@@ -16,7 +16,6 @@ export default function App(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   
   usePageView();
-  
   return (
     <CacheProvider value={emotionCache}>
       <Head>
