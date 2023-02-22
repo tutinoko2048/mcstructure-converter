@@ -1,24 +1,47 @@
-export const GA_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || ''
+import Script from 'next/script';
 
-// IDが取得できない場合を想定する
-export const existsGaId = GA_ID !== ''
+export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID || "";
+export const pageview = (url) => {
+  if (!GA_TRACKING_ID) return;
+  window.gtag("config", GA_TRACKING_ID, {
+    page_path: url,
+  });
+};
 
-// PVを測定する
-export const pageview = (path) => {
-  window.gtag('config', GA_ID, {
-    page_path: path,
-  })
+export function Analytics() {
+  return (
+    <>
+      {GA_TRACKING_ID && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
+          <script dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_TRACKING_ID}', {
+                page_path: window.location.pathname,
+              });
+              console.info('analytics loaded');
+            `}}
+          />
+        </>
+      )}
+    </>
+  )
 }
 
-// GAイベントを発火させる
-export const event = ({action, category, label, value = ''}) => {
-  if (!existsGaId) {
-    return
-  }
-
-  window.gtag('event', action, {
-    event_category: category,
-    event_label: JSON.stringify(label),
-    value,
-  })
-}
+{/*
+<Script defer src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} strategy="afterInteractive" />
+          <Script id="ga" defer strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_TRACKING_ID}', {
+              page_path: window.location.pathname,
+            });
+            console.info('analytics loaded');
+          `}
+          </Script>
+*/}
