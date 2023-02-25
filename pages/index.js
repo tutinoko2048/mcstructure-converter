@@ -9,6 +9,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import FormatIcon from '@mui/icons-material/FormatAlignLeftSharp';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -127,23 +128,29 @@ export default function Home() {
       <Button variant="contained" onClick={handleCopy} startIcon={<ContentCopyIcon/>}>
         Copy
       </Button>
-      <Button variant="contained" onClick={formatPreview} style={{ marginLeft: "0.5rem" }} startIcon={<FormatIcon/>}>
+      <Button variant="contained" onClick={formatPreview} style={{ marginLeft: '0.5rem' }} startIcon={<FormatIcon/>}>
         Format
+      </Button>
+      <Button variant="contained" onClick={clearPreview} style={{ float: 'right' }} color="inherit" startIcon={<DeleteIcon/>}>
+        Clear
       </Button>
       <div id="info"></div>
       
       <br/>
       <fieldset className={styles.fieldset} id="result">
         <div className={styles.form}>
-          <TextField
-            id="fileName"
+          <TextField id="fileName"
             label="File name"
             variant="outlined"
             size="small"
             value={fileName}
           />
           <br/>
-          <Button variant="contained" onClick={handleGenerate} startIcon={<IosShareIcon/>} style={{ marginTop: "0.5rem"}}>
+          <Button variant="contained"
+            onClick={handleGenerate}
+            startIcon={<IosShareIcon/>}
+            style={{ marginTop: '0.5rem'}}
+          >
             Generate
           </Button>
         </div>
@@ -151,8 +158,7 @@ export default function Home() {
       <br/>
       <a href="https://github.com/tutinoko2048/mcstructure-converter">Github</a>
       
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         open={notification.open}
         autoHideDuration={5000}
         onClose={handleClose}
@@ -164,7 +170,9 @@ export default function Home() {
   )
 }
 
-
+function clearPreview() {
+  document.getElementById('preview').value = '';
+}
 
 function generateStructure(selection) {
   const data = document.getElementById('preview').value;
@@ -180,15 +188,4 @@ function generateStructure(selection) {
   a.href = url;
   a.download = document.getElementById('fileName').value;
   a.click();
-}
-
-function formatSNBT() {
-  const preview = document.getElementById('preview');
-  const info = document.getElementById('info');
-  try {
-    preview.value = snbt.stringify(snbt.parse(preview.value), { pretty: true });
-  } catch(e) {
-    info.innerHTML = String(e);
-    setTimeout(() => info.innerHTML = '', 3*1000);
-  }
 }
