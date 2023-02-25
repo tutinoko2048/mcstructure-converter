@@ -17,6 +17,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export default function Home() {
   const [ selection, setSelection ] = React.useState('structure');
   const [ notification, setNotification ] = React.useState({ open: false, message: '', severity: 'success' });
+  const [ fileName, setFileName ] = React.useState('generated.mcstructure');
   
   const handleCopy = () => {
     const text = document.getElementById('preview').value;
@@ -63,12 +64,17 @@ export default function Home() {
     const input = document.getElementById('input');
     const reader = new FileReader();
     if (!input.files[0]) return;
+    const file = input.files[0];
     if (selection === 'structure') {
       reader.addEventListener('load', () => loadStructure(reader.result));
-      reader.readAsArrayBuffer(input.files[0]);
+      reader.readAsArrayBuffer(file);
+      setNotification({ open: true, message: `Successfully loaded ${file.name}`, severity: 'success' });
+      setFileName(file.name);
     } else if (selection === 'json' || selection === 'snbt') {
       reader.addEventListener('load', () => loadText(reader.result));
-      reader.readAsText(input.files[0]);
+      reader.readAsText(file);
+      setNotification({ open: true, message: `Successfully loaded ${file.name}`, severity: 'success' });
+      setFileName(file.name);
     } else {
       setNotification({ open: true, message: `Received unexpected type: ${selection}`, severity: 'error' });
     }
@@ -105,7 +111,7 @@ export default function Home() {
             <FormControlLabel value="structure" control={<Radio/>} label="structure"/>
             <FormControlLabel value="json" control={<Radio/>} label="JSON" />
             {
-              //<FormControlLabel value="snbt" control={<Radio/>} label="SNBT" />
+              //<FormControlLabel value="snbt" control={<Radio/>} label="SNBT(item)" />
             }
           </RadioGroup>
         </FormControl>
@@ -131,10 +137,10 @@ export default function Home() {
         <div className={styles.form}>
           <TextField
             id="fileName"
-            defaultValue="generated.mcstructure"
             label="File name"
             variant="outlined"
             size="small"
+            value={fileName}
           />
           <br/>
           <Button variant="contained" onClick={handleGenerate} startIcon={<IosShareIcon/>} style={{ marginTop: "0.5rem"}}>
