@@ -1,6 +1,5 @@
 import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import styles from '../styles/Home.module.css';
 import * as nbt from 'prismarine-nbt';
 import * as snbt from 'nbt-ts';
@@ -10,6 +9,8 @@ import IosShareIcon from '@mui/icons-material/IosShare';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import FormatIcon from '@mui/icons-material/FormatAlignLeftSharp';
 import DeleteIcon from '@mui/icons-material/Delete';
+
+import { GA_TRACKING_ID } from '../src/lib/gtag';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -103,6 +104,10 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
       <h1 className={styles.title}>mcstructure converter</h1>
+      
+      <br/>
+      
+      <p>ga_id: {GA_TRACKING_ID}</p>
       
       <div className={styles.label}>Select file</div><br/>  
       <fieldset className={styles.fieldset}>
