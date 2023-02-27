@@ -1,6 +1,5 @@
 import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import styles from '../styles/Home.module.css';
 import * as nbt from 'prismarine-nbt';
 import * as snbt from 'nbt-ts';
@@ -103,6 +102,7 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
       <h1 className={styles.title}>mcstructure converter</h1>
+
       
       <div className={styles.label}>Select file</div><br/>  
       <fieldset className={styles.fieldset}>
