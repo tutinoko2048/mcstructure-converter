@@ -7,6 +7,7 @@ export const pageview = (url) => {
 };
 
 export function Analytics() {
+  console.info(GA_TRACKING_ID);
   return (
     <>
       {GA_TRACKING_ID && (
