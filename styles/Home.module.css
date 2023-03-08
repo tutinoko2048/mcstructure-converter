@@ -19,6 +19,7 @@
 
 .label {
   font-size: 1.2rem;
+  margin-bottom: -0.7em
 }
 
 .select {
@@ -43,4 +44,8 @@
 
 .form {
   padding: 0.5rem 0;
+}
+
+.error {
+  background-color: #ffd2cf;
 }
