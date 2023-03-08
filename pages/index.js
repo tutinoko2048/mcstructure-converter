@@ -106,7 +106,6 @@ export default function Home() {
     noClick: true
   });
   
-
   React.useEffect(() => {
     updatePreview(acceptedFiles[0]);
   }, [ acceptedFiles, selection ]);
