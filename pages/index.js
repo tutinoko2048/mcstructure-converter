@@ -4,39 +4,34 @@ import styles from '../styles/Home.module.css';
 import * as nbt from 'prismarine-nbt';
 import * as snbt from 'nbt-ts';
 import { useDropzone } from 'react-dropzone';
+import { useSnackbar } from '../src/snackbar/Snackbar';
 
-import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Snackbar, Alert as MuiAlert } from '@mui/material';
+import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import FormatIcon from '@mui/icons-material/FormatAlignLeftSharp';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-
-const NotifyAlert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
-const initialAlert = { open: false, message: '', severity: 'success' };
+const borderNormalStyle = {};
+const borderDragStyle = {
+  border: "1px solid #00f",
+  transition: 'border .2s ease-in-out'
+};
 
 export default function Home() {
   const [ selection, setSelection ] = React.useState('structure');
-  const [ alert, setAlert ] = React.useState(initialAlert);
   const [ fileName, setFileName ] = React.useState('generated.mcstructure');
   const [ isError, setError ] = React.useState(false);
+  const { showSnackbar } = useSnackbar();
   
   const handleCopy = () => {
     const text = document.getElementById('preview').value;
     if (text) navigator.clipboard.writeText(text);
-    setAlert({
-      open: true,
-      message: text ? 'Copied!' : 'There is nothing to copy!',
-      severity: text ? 'info' : 'warning'
-    });
-  };
-  
-  const handleClose = (_, reason) => {
-    if (reason !== 'clickaway') setAlert({ ...alert, open: false });
+    showSnackbar(
+      text ? 'Copied!' : 'There is nothing to copy!',
+      text ? 'info' : 'warning'
+    );
   };
   
   const handleSelect = (ev) => setSelection(ev.target.value);
@@ -45,12 +40,12 @@ export default function Home() {
     try {
       generateStructure(selection);
     } catch(e) {
-      setAlert({ open: true, message: String(e), severity: 'error' });
+      showSnackbar(String(e), 'error');
     }
   }
   
   const loadSuccess = (fileName) => {
-    setAlert({ open: true, message: `Successfully loaded ${fileName}`, severity: 'success' });
+    showSnackbar(`Successfully loaded ${fileName}`, 'success');
     setFileName(fileName);
   }
   const loadStructure = async (data, fileName) => {
@@ -63,7 +58,7 @@ export default function Home() {
     } catch(e) {
       preview.value = '';
       setError(true);
-      setAlert({ open: true, message: String(e), severity: 'error' });
+      showSnackbar(String(e), 'error');
     }
   }
   
@@ -85,7 +80,7 @@ export default function Home() {
       reader.readAsText(file);
       
     } else {
-      setAlert({ open: true, message: `Received unexpected type: ${selection}`, severity: 'error' });
+      showSnackbar(`Received unexpected type: ${selection}`, 'error');
     }
   }
   
@@ -94,9 +89,9 @@ export default function Home() {
     if (selection === 'structure' || selection === 'json') {
       try {
         preview.value = JSON.stringify(JSON.parse(preview.value), null, 2);
-        setAlert({ open: true, message: 'Formatted!', severity: 'success' })
+        showSnackbar('Formatted!', 'success');
       } catch {
-        setAlert({ open: true, message: 'ParseError: failed to parse JSON in preview', severity: 'error' });
+        showSnackbar('ParseError: failed to parse JSON in preview', 'error');
       }
     }
   }
@@ -106,9 +101,12 @@ export default function Home() {
     noClick: true
   });
   
-  React.useEffect(() => {
-    updatePreview(acceptedFiles[0]);
-  }, [ acceptedFiles, selection ]);
+  // eslint-disable-next-line
+  React.useEffect(() => updatePreview(acceptedFiles[0]), [acceptedFiles, selection]);
+  
+  const dropZoneStyle = React.useMemo(() => (
+    { ...(isDragActive ? borderDragStyle : borderNormalStyle) }
+  ), [isDragActive]);
   
   const TypeSelector = React.memo(function Selector() {
     return (
@@ -144,8 +142,8 @@ export default function Home() {
       <h1 className={styles.title}>mcstructure converter</h1>
 
       <div className={styles.label}>Select file</div><br/>  
-      <fieldset className={styles.fieldset}>
-        <div {...getRootProps()}>
+      <fieldset className={styles.fieldset} {...getRootProps({ style: dropZoneStyle })} >
+        <div >
           { isDragActive ? <p>Drop the files here ...</p> : <TypeSelector /> }
           <input {...getInputProps()} />
           <Button variant="contained" component="label" startIcon={<FileOpenIcon/>} onClick={open}>
@@ -176,13 +174,6 @@ export default function Home() {
       <br/>
       <a href="https://github.com/tutinoko2048/mcstructure-converter">Github</a>
       
-      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        open={alert.open}
-        autoHideDuration={5000}
-        onClose={handleClose}
-      >
-        <NotifyAlert onClose={handleClose} severity={alert.severity} sx={{ width: '100%' }}>{alert.message ?? ''}</NotifyAlert>
-      </Snackbar>
       </main>
     </>
   )
