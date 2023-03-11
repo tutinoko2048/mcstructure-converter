@@ -13,6 +13,11 @@ import FileOpenIcon from '@mui/icons-material/FileOpen';
 import FormatIcon from '@mui/icons-material/FormatAlignLeftSharp';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+const borderNormalStyle = {};
+const borderDragStyle = {
+  border: "1px solid #00f",
+  transition: 'border .2s ease-in-out'
+};
 
 export default function Home() {
   const [ selection, setSelection ] = React.useState('structure');
@@ -97,7 +102,11 @@ export default function Home() {
   });
   
   // eslint-disable-next-line
-  React.useEffect(() => updatePreview(acceptedFiles[0]), [ acceptedFiles, selection ]);
+  React.useEffect(() => updatePreview(acceptedFiles[0]), [acceptedFiles, selection]);
+  
+  const dropZoneStyle = React.useMemo(() => (
+    { ...(isDragActive ? borderDragStyle : borderNormalStyle) }
+  ), [isDragActive]);
   
   const TypeSelector = React.memo(function Selector() {
     return (
@@ -133,8 +142,8 @@ export default function Home() {
       <h1 className={styles.title}>mcstructure converter</h1>
 
       <div className={styles.label}>Select file</div><br/>  
-      <fieldset className={styles.fieldset}>
-        <div {...getRootProps()}>
+      <fieldset className={styles.fieldset} {...getRootProps({ style: dropZoneStyle })} >
+        <div >
           { isDragActive ? <p>Drop the files here ...</p> : <TypeSelector /> }
           <input {...getInputProps()} />
           <Button variant="contained" component="label" startIcon={<FileOpenIcon/>} onClick={open}>
