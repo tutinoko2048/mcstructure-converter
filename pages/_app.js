@@ -9,7 +9,7 @@ import theme from '../src/theme';
 import createEmotionCache from '../src/createEmotionCache';
 const clientSideEmotionCache = createEmotionCache();
 
-import { GA_TRACKING_ID, pageview, Analytics } from '../src/lib/gtag';
+import { GA_TRACKING_ID, pageview } from '../src/lib/gtag';
 
 import { SnackbarContextProvider } from '../src/snackbar/Snackbar';
 
@@ -31,7 +31,6 @@ export default function App(props) {
     <CacheProvider value={emotionCache}>
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
-        <Analytics />
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
