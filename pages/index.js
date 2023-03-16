@@ -5,6 +5,7 @@ import * as nbt from 'prismarine-nbt';
 import * as snbt from 'nbt-ts';
 import { useDropzone } from 'react-dropzone';
 import { useSnackbar } from '../src/snackbar/Snackbar';
+import Header from './Header';
 
 import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -138,8 +139,10 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      
+      <Header name="mcstructure converter" pageId="converter"/>
+      
       <main className={styles.main}>
-      <h1 className={styles.title}>mcstructure converter</h1>
 
       <div className={styles.label}>Select file</div><br/>  
       <fieldset className={styles.fieldset} {...getRootProps({ style: dropZoneStyle })} >
@@ -153,7 +156,7 @@ export default function Home() {
       </fieldset><br/>
 
       <div className={styles.label}>Preview</div><br/>
-      <textarea id="preview" className={`${styles.textarea} ${isError ? 'error' : ''}`}></textarea><br/>
+      <textarea id="preview" className={`${styles.textarea} ${isError ? styles.error : ''}`}></textarea><br/>
       <Button variant="contained" onClick={handleCopy} startIcon={<ContentCopyIcon/>}>
         Copy
       </Button>

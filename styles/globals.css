@@ -1,0 +1,14 @@
+
+.menu ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.menu li {
+  padding: 0.8rem;
+}
+
+.menu a {
+  color: inherit;
+  text-decoration: none;
+}
