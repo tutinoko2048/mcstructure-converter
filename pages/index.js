@@ -2,10 +2,10 @@ import React from 'react';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import * as nbt from 'prismarine-nbt';
-import * as snbt from 'nbt-ts';
 import { useDropzone } from 'react-dropzone';
 import { useSnackbar } from '../src/snackbar/Snackbar';
 import Header from './Header';
+import { writeStructure } from '../src/nbt';
 
 import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -49,6 +49,7 @@ export default function Home() {
     showSnackbar(`Successfully loaded ${fileName}`, 'success');
     setFileName(fileName);
   }
+  
   const loadStructure = async (data, fileName) => {
     const preview = document.getElementById('preview');
     try {
@@ -65,6 +66,7 @@ export default function Home() {
   
   const loadText = (data, fileName) => {
     document.getElementById('preview').value = data;
+    setError(false);
     loadSuccess(fileName);
   }
   
@@ -76,7 +78,7 @@ export default function Home() {
       reader.addEventListener('load', () => loadStructure(reader.result, file.name));
       reader.readAsArrayBuffer(file);
       
-    } else if (selection === 'json' || selection === 'snbt') {
+    } else if (selection === 'json') {
       reader.addEventListener('load', () => loadText(reader.result, file.name));
       reader.readAsText(file);
       
@@ -138,6 +140,7 @@ export default function Home() {
         <meta name="description" content="Converts .mcstructure file into JSON that you can easily edit." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </Head>
       
       <Header name="mcstructure converter" pageId="converter"/>
@@ -189,13 +192,7 @@ function clearPreview() {
 function generateStructure(selection) {
   const data = document.getElementById('preview').value;
   if (!data) throw Error('Please put valid JSON');
-  let structure;
-  
-  if (selection === 'snbt') structure = snbt.encode(null, snbt.parse(data));
-  else structure = nbt.writeUncompressed(JSON.parse(data), 'little');
-  
-  const blob = new Blob([ structure ]);
-  const url = window.URL.createObjectURL(blob);
+  const url = writeStructure(data, selection);
   const a = document.createElement('a');
   a.href = url;
   a.download = document.getElementById('fileName').value;

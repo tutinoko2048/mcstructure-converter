@@ -1,7 +1,9 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-    // TODO:テーマ設定を行います
+  palette: {
+    
+  }
 });
 
 export default theme;
