@@ -2,18 +2,13 @@ import React from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import * as nbt from 'prismarine-nbt';
-import { createItem } from '../src/nbt'
+import { createItem, createEnchant } from '../src/nbt'
 import template from '../src/chest_structure.json';
-import { Divider, List, IconButton, Button, TextField as MuiTextField, Box, Typography } from '@mui/material';
-import { Accordion, AccordionSummary, AccordionDetails } from '../src/components/Accordion';
+import { Divider, List, IconButton, Button, TextField as MuiTextField, Typography, Switch } from '@mui/material';
+import { Accordion, AccordionSummary } from '../src/components/Accordion';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from "@mui/icons-material/Close";
-
-const TextField = (props) => (
-  <MuiTextField variant="outlined" size="small" {...props} sx={{ marginLeft: '1em', width: '18em', maxWidth: '100%'}}
-  />
-)
 
 const styles = {
   viewer: {
@@ -34,6 +29,11 @@ const styles = {
     flexGrow: 1
   }
 }
+
+const TextField = (props) => (
+  <MuiTextField variant="outlined" size="small" {...props} sx={{ width: '18em', maxWidth: '100%'}}
+  />
+);
 
 const PreviewLabel = ({ value }) => (
   <span style={{ flexDirection: 'column' }}>
@@ -63,7 +63,6 @@ export default function ItemGenerator() {
   }
   
   const deleteItem = (e, index) => {
-    alert(index)
     e.stopPropagation();
     items.splice(index, 1);
     setItems([...items]);
@@ -72,20 +71,33 @@ export default function ItemGenerator() {
   const changeValue = (value, id, index) => {
     if (id === 'id') items[index].Name.value = value;
     if (id === 'name') items[index].tag.value.display.value.Name.value = value;
-    if (id === 'lore') {}
+    if (id === 'unbreakable') items[index].tag.value.Unbreakable = value ? nbt.byte(value) : undefined;
     
     setItems([...items]);
     const p = document.createElement('p');
     p.innerHTML = `[${index}] ${id}: ${value}`;
-    document.getElementById('debug').appendChild(p);
+    //document.getElementById('debug').appendChild(p);
   }
   
+  const changeLore = (lores, i) => {
+    //items[i].tag.value.display.value.Lore.value.value = lores;
+    items[i].tag.value.display.value.Lore = lores.length ? nbt.list(nbt.string(lores)) : undefined;
+    setItems([...items]);
+  }
   
+  const changeEnchant = (enchants, i) => {
+    //items[i].tag.value.ench.value.value = enchants;
+    items[i].tag.value.ench = enchants.length ? nbt.list(nbt.comp(enchants)) : undefined;
+    setItems([...items]);
+  }
+
   const createPanel = () => {
     return items.map((item, i) => {
       const itemId = item.Name.value;
       const itemName = item.tag.value.display.value.Name.value;
-      const itemLore = item.tag.value.display.value.Lore.value.value;
+      const itemLore = item.tag.value.display.value.Lore?.value?.value ?? [];
+      const itemEnchant = item.tag.value.ench?.value?.value ?? [];
+      const isUnbreakable = item.tag.value.Unbreakable?.value;
       
       return (
         <Accordion key={i} sx={styles.item} expanded={expand === i} onChange={() => handleExpand(i)}>
@@ -98,13 +110,78 @@ export default function ItemGenerator() {
             <IconButton size="small" onClick={(e) => deleteItem(e, i)}><CloseIcon/></IconButton>
           </AccordionSummary>
           <div style={{ margin: '0.8em'}}>
+          {/* TODO: 幅揃える https://webcreatetips.com/coding/3499/ */}
             <PreviewLabel value="Identifier:"/>
-            <TextField value={itemId} onChange={(e) => changeValue(e.target.value, 'id', i)} /><br/>
+            <TextField value={itemId} style={{ marginLeft: '1em' }}
+              onChange={(e) => changeValue(e.target.value, 'id', i)}
+            /><br/>
+            
             <PreviewLabel value="Name:"/>
-            <TextField value={itemName} onChange={(e) => changeValue(e.target.value, 'name', i)} /><br/>
+            <TextField value={itemName} style={{ marginLeft: '1em' }}
+              onChange={(e) => changeValue(e.target.value, 'name', i)}
+            /><br/>
+            
             <PreviewLabel value="Lore:"/>
-            <TextField id="lore" /><br/>
-            <PreviewLabel value="Enchantments:"/><br/>
+            <IconButton onClick={() => {
+              itemLore.push('');
+              changeLore(itemLore, i);
+              
+            }}><AddIcon/></IconButton><br/>
+            
+            {...itemLore.map((lore, loreIndex) => (
+              <div key={loreIndex} style={{ marginBottom: '0.5em' }}>
+                <div style={{ display: 'flex' }}>
+                  <TextField multiline style={{ marginLeft: '1em', width: '25em' }} value={lore} onChange={(e) => {
+                    itemLore[loreIndex] = e.target.value;
+                    changeLore(itemLore, i);
+                  }}/>
+                  <IconButton onClick={() => {
+                    itemLore.splice(loreIndex, 1);
+                    changeLore(itemLore, i);
+                  }}>
+                    <CloseIcon/>
+                  </IconButton>
+                </div>
+              </div>
+            ))}
+
+            {/* eslint-disable-next-line */}
+            <PreviewLabel value="Enchantments:"/>
+            <IconButton onClick={() => {
+              itemEnchant.push(createEnchant());
+              setItems([...items]);
+            }}><AddIcon/></IconButton>
+            
+            {...itemEnchant.map((enchant, enchIndex) => (
+              <div key={enchIndex} style={{ marginLeft: '1em', marginBottom: '0.5em' }}>
+                <div>
+                  ID:{enchant.id.value ?? '-'}, Level: {enchant.lvl.value ?? '-'}
+                </div>
+                <div style={{ display: 'flex' }}>                
+                  <TextField value={enchant.id.value} style={{ marginRight: '0.8em', width: '6em' }} onChange={(e) => {
+                    enchant.id.value = e.target.value;
+                    changeEnchant(itemEnchant, i);
+                  }}/>
+                  <TextField value={enchant.lvl.value} style={{ width: '6em' }} type="number" onChange={(e) => {
+                    enchant.lvl.value = e.target.value;
+                    changeEnchant(itemEnchant, i);
+                  }}/>
+                  <IconButton onClick={() => {
+                    itemEnchant.splice(enchIndex, 1);
+                    changeEnchant(itemEnchant, i);
+                  }}>
+                    <CloseIcon/>
+                  </IconButton>
+                </div>
+              </div>
+            ))}
+            <br/>
+            {/* eslint-disable-next-line */}
+            <PreviewLabel value="Unbreakable"/>
+            <Switch value={isUnbreakable}
+              onChange={(e) => changeValue(e.target.checked ? 1 : 0, 'unbreakable', i)}
+            />
+            
           </div>
         </Accordion>
       )
@@ -125,7 +202,7 @@ export default function ItemGenerator() {
       Under development...<br/>
       <br/>
       
-      Items<br/>
+      Items ({items.length}/27)<br/>
       <List >
         {...createPanel()}
       </List>
@@ -152,10 +229,18 @@ function generateTree(obj) {
     <ul style={styles.viewer}>
       {...Object.keys(obj).map(k => {
         if (isObject(obj[k])) return <li key={k} >{k}: {generateTree(obj[k])}</li>
-        return <li key={k}>{k}: {String(obj[k])}</li>
+        return <li
+          key={k}
+          style={obj[k] === undefined ? { color: 'darkgray' } : null}>
+            {k}: {typeView(obj[k])}
+          </li>
       })}
     </ul>
   )
+}
+
+function typeView(value) {
+  return typeof value === 'string' ? `"${value}"` : String(value);
 }
 
 function isObject(item) {
