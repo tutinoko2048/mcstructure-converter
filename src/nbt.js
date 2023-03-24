@@ -1,6 +1,8 @@
 import * as nbt from 'prismarine-nbt';
 import * as snbt from 'nbt-ts';
 
+export * from './EnchantmentTypes';
+
 export function writeStructure(data, mode) {
   let structure;
   

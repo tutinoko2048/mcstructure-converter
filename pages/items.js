@@ -2,9 +2,9 @@ import React from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import * as nbt from 'prismarine-nbt';
-import { createItem, createEnchant } from '../src/nbt'
+import { createItem, createEnchant, EnchantmentTypes } from '../src/nbt';
 import template from '../src/chest_structure.json';
-import { Divider, List, IconButton, Button, TextField as MuiTextField, Typography, Switch } from '@mui/material';
+import { Divider, List, IconButton, Button, TextField as MuiTextField, Typography, Switch, Select, MenuItem } from '@mui/material';
 import { Accordion, AccordionSummary } from '../src/components/Accordion';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -31,7 +31,7 @@ const styles = {
 }
 
 const TextField = (props) => (
-  <MuiTextField variant="outlined" size="small" {...props} sx={{ width: '18em', maxWidth: '100%'}}
+  <MuiTextField variant="outlined" size="small" {...props} sx={{ width: '18em', maxWidth: '95%'}}
   />
 );
 
@@ -70,7 +70,7 @@ export default function ItemGenerator() {
   
   const changeValue = (value, id, index) => {
     if (id === 'id') items[index].Name.value = value;
-    if (id === 'name') items[index].tag.value.display.value.Name.value = value;
+    if (id === 'name') items[index].tag.value.display.value.Name.value = value ? value : undefined;
     if (id === 'unbreakable') items[index].tag.value.Unbreakable = value ? nbt.byte(value) : undefined;
     
     setItems([...items]);
@@ -94,7 +94,7 @@ export default function ItemGenerator() {
   const createPanel = () => {
     return items.map((item, i) => {
       const itemId = item.Name.value;
-      const itemName = item.tag.value.display.value.Name.value;
+      const itemName = item.tag.value.display.value.Name?.value ?? '';
       const itemLore = item.tag.value.display.value.Lore?.value?.value ?? [];
       const itemEnchant = item.tag.value.ench?.value?.value ?? [];
       const isUnbreakable = item.tag.value.Unbreakable?.value;
@@ -155,13 +155,23 @@ export default function ItemGenerator() {
             {...itemEnchant.map((enchant, enchIndex) => (
               <div key={enchIndex} style={{ marginLeft: '1em', marginBottom: '0.5em' }}>
                 <div>
-                  ID:{enchant.id.value ?? '-'}, Level: {enchant.lvl.value ?? '-'}
+                  ID: {enchant.id.value ?? '-'}, Level: {enchant.lvl.value ?? '-'}
                 </div>
-                <div style={{ display: 'flex' }}>                
+                <div style={{ display: 'flex' }}>
+                {/*
                   <TextField value={enchant.id.value} style={{ marginRight: '0.8em', width: '6em' }} onChange={(e) => {
                     enchant.id.value = e.target.value;
-                    changeEnchant(itemEnchant, i);
+                    changeEnchant(itemEnchant, i)
                   }}/>
+                  */}
+                  <Select value={enchant.id.value} style={{ maxWidth: '70%', marginRight: '0.5em' }} size="small" onChange={(e) => {
+                    enchant.id.value = e.target.value;
+                    changeEnchant(itemEnchant, i);
+                  }}>
+                    {...Object.keys(EnchantmentTypes).map(enchId => (
+                      <MenuItem value={enchId}>{EnchantmentTypes[enchId]}</MenuItem>
+                    ))}
+                  </Select>
                   <TextField value={enchant.lvl.value} style={{ width: '6em' }} type="number" onChange={(e) => {
                     enchant.lvl.value = e.target.value;
                     changeEnchant(itemEnchant, i);
@@ -176,6 +186,7 @@ export default function ItemGenerator() {
               </div>
             ))}
             <br/>
+            
             {/* eslint-disable-next-line */}
             <PreviewLabel value="Unbreakable"/>
             <Switch value={isUnbreakable}
