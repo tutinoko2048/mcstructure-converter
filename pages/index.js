@@ -192,7 +192,7 @@ function clearPreview() {
 function generateStructure(selection) {
   const data = document.getElementById('preview').value;
   if (!data) throw Error('Please put valid JSON');
-  const url = writeStructure(data, selection);
+  const url = writeStructure(JSON.parse(data), selection);
   const a = document.createElement('a');
   a.href = url;
   a.download = document.getElementById('fileName').value;

@@ -2,18 +2,19 @@ import React from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import * as nbt from 'prismarine-nbt';
-import { createItem, createEnchant, EnchantmentTypes } from '../src/nbt';
+import { createItem, createEnchant, EnchantmentTypes, writeStructure } from '../src/nbt';
 import template from '../src/chest_structure.json';
 import { Divider, List, IconButton, Button, TextField as MuiTextField, Typography, Switch, Select, MenuItem } from '@mui/material';
 import { Accordion, AccordionSummary } from '../src/components/Accordion';
+import { useSnackbar } from '../src/snackbar/Snackbar';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from "@mui/icons-material/Close";
 
+const MAX_COUNT = 27;
+
 const styles = {
-  viewer: {
-    paddingLeft: '1.2em'
-  },
+  viewer: { paddingLeft: '1.2em' },
   item: {
     bgcolor: 'background.paper',
     width: '40em',
@@ -25,25 +26,41 @@ const styles = {
     fontWeight: 'bold',
     fontSize: '1.1em'
   },
-  right: {
-    flexGrow: 1
-  }
+  right: { flexGrow: 1 },
+  select: { minWidth: '30%',  marginRight: '0.5em' },
+  grid: { margin: 'auto'},
+  'export': { textTransform: 'none', marginTop: '0.8em' }
 }
 
 const TextField = (props) => (
-  <MuiTextField variant="outlined" size="small" {...props} sx={{ width: '18em', maxWidth: '95%'}}
-  />
+  <MuiTextField variant="outlined" size="small" {...props} sx={{ width: '18em', maxWidth: '95%'}} />
 );
 
+const NumberField = (props) => {
+  const handleChange = (e) => {
+    if (e.target.value === '') return props.onChange(null);
+    if (isNaN(e.target.value)) {
+      props.onChange(null)
+    } else {
+      props.onChange(Number(e.target.value));
+    }
+    
+  }
+  return <TextField {...props} onChange={handleChange} inputProps={{
+    inputMode: "numeric",
+    pattern: "[0-9]*"
+  }}/>
+}
+
 const PreviewLabel = ({ value }) => (
-  <span style={{ flexDirection: 'column' }}>
-    {value}
-  </span>
+  <span style={{ flexDirection: 'column' }}>{value}</span>
 )
 
 export default function ItemGenerator() {
   const { block_entity_data } = template.value.structure.value.palette.value.default.value.block_position_data.value[0].value;
   const itemList = block_entity_data.value.Items.value;
+  
+  const { showSnackbar } = useSnackbar();
   
   const [ expand, setExpand ] = React.useState(false);
   const [ items, setItems ] = React.useState([ createItem('minecraft:diamond') ]);
@@ -51,6 +68,7 @@ export default function ItemGenerator() {
   const updateList = () => itemList.value = items;
   
   const addItem = () => {
+    if (items.length >= MAX_COUNT) return showSnackbar(`The max size of container is ${MAX_COUNT}`, 'error');
     const newList = [...items, createItem()];
     setItems(newList);
     
@@ -70,23 +88,18 @@ export default function ItemGenerator() {
   
   const changeValue = (value, id, index) => {
     if (id === 'id') items[index].Name.value = value;
-    if (id === 'name') items[index].tag.value.display.value.Name.value = value ? value : undefined;
+    if (id === 'name') items[index].tag.value.display.value.Name = value ? nbt.string(value) : undefined;
     if (id === 'unbreakable') items[index].tag.value.Unbreakable = value ? nbt.byte(value) : undefined;
     
     setItems([...items]);
-    const p = document.createElement('p');
-    p.innerHTML = `[${index}] ${id}: ${value}`;
-    //document.getElementById('debug').appendChild(p);
   }
   
   const changeLore = (lores, i) => {
-    //items[i].tag.value.display.value.Lore.value.value = lores;
     items[i].tag.value.display.value.Lore = lores.length ? nbt.list(nbt.string(lores)) : undefined;
     setItems([...items]);
   }
   
   const changeEnchant = (enchants, i) => {
-    //items[i].tag.value.ench.value.value = enchants;
     items[i].tag.value.ench = enchants.length ? nbt.list(nbt.comp(enchants)) : undefined;
     setItems([...items]);
   }
@@ -110,6 +123,7 @@ export default function ItemGenerator() {
             <IconButton size="small" onClick={(e) => deleteItem(e, i)}><CloseIcon/></IconButton>
           </AccordionSummary>
           <div style={{ margin: '0.8em'}}>
+          
           {/* TODO: 幅揃える https://webcreatetips.com/coding/3499/ */}
             <PreviewLabel value="Identifier:"/>
             <TextField value={itemId} style={{ marginLeft: '1em' }}
@@ -125,7 +139,6 @@ export default function ItemGenerator() {
             <IconButton onClick={() => {
               itemLore.push('');
               changeLore(itemLore, i);
-              
             }}><AddIcon/></IconButton><br/>
             
             {...itemLore.map((lore, loreIndex) => (
@@ -149,7 +162,7 @@ export default function ItemGenerator() {
             <PreviewLabel value="Enchantments:"/>
             <IconButton onClick={() => {
               itemEnchant.push(createEnchant());
-              setItems([...items]);
+              changeEnchant(itemEnchant, i);
             }}><AddIcon/></IconButton>
             
             {...itemEnchant.map((enchant, enchIndex) => (
@@ -158,22 +171,16 @@ export default function ItemGenerator() {
                   ID: {enchant.id.value ?? '-'}, Level: {enchant.lvl.value ?? '-'}
                 </div>
                 <div style={{ display: 'flex' }}>
-                {/*
-                  <TextField value={enchant.id.value} style={{ marginRight: '0.8em', width: '6em' }} onChange={(e) => {
-                    enchant.id.value = e.target.value;
-                    changeEnchant(itemEnchant, i)
-                  }}/>
-                  */}
-                  <Select value={enchant.id.value} style={{ maxWidth: '70%', marginRight: '0.5em' }} size="small" onChange={(e) => {
-                    enchant.id.value = e.target.value;
+                  <Select value={enchant.id.value} style={styles.select} size="small" MenuProps={{ style: { height: '50%' }}} onChange={(e) => {
+                    enchant.id.value = Number(e.target.value);
                     changeEnchant(itemEnchant, i);
                   }}>
                     {...Object.keys(EnchantmentTypes).map(enchId => (
-                      <MenuItem value={enchId}>{EnchantmentTypes[enchId]}</MenuItem>
+                      <MenuItem key={enchId} value={enchId}>{EnchantmentTypes[enchId]}</MenuItem>
                     ))}
                   </Select>
-                  <TextField value={enchant.lvl.value} style={{ width: '6em' }} type="number" onChange={(e) => {
-                    enchant.lvl.value = e.target.value;
+                  <NumberField value={enchant.lvl.value} style={{ width: '6em' }} onChange={(value) => {
+                    enchant.lvl.value = value;
                     changeEnchant(itemEnchant, i);
                   }}/>
                   <IconButton onClick={() => {
@@ -210,10 +217,8 @@ export default function ItemGenerator() {
     <Header name="Item Generator" pageId="items" />
     
     <main style={{ marginLeft: '1em' }}>
-      Under development...<br/>
-      <br/>
       
-      Items ({items.length}/27)<br/>
+      Items ({items.length}/{MAX_COUNT})<br/>
       <List >
         {...createPanel()}
       </List>
@@ -225,6 +230,22 @@ export default function ItemGenerator() {
       </Button><br/>
       <br/>
       <Divider/>
+      <br/>
+      Name:<br/>
+      <TextField id="fileName" defaultValue="export"/><br/>
+      
+      <Button style={styles.export} variant="contained" size="small" onClick={() => {
+        updateList();
+        exportStructure(JSON.parse(JSON.stringify(template))); // delete undefined
+      }}>Export as structure</Button><br/>
+
+      <Button style={styles.export} variant="contained" size="small" onClick={() => {
+        updateList();
+        exportJson(template);
+      }}>Export as JSON</Button><br/>
+        
+      <br/>
+      <Divider/>
       <div id="debug"/>
       
       <h4>Debug view</h4>
@@ -233,6 +254,23 @@ export default function ItemGenerator() {
     </main>
     </>
   )
+}
+
+function exportStructure(data) {
+  const fileName = document.getElementById('fileName');
+  const a = document.createElement('a');
+  a.href = writeStructure(data);
+  a.download = `${fileName.value}.mcstructure`;
+  a.click();
+}
+
+function exportJson(data) {
+  const fileName = document.getElementById('fileName');
+  const blob = new Blob([ JSON.stringify(data, null, 2) ]);
+  const a = document.createElement('a');
+  a.href = window.URL.createObjectURL(blob);
+  a.download = `${fileName.value}.json`;
+  a.click();
 }
 
 function generateTree(obj) {
@@ -255,5 +293,5 @@ function typeView(value) {
 }
 
 function isObject(item) {
-  return typeof item === 'object';
+  return item && typeof item === 'object';
 }

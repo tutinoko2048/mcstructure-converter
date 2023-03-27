@@ -3,12 +3,16 @@ import * as snbt from 'nbt-ts';
 
 export * from './EnchantmentTypes';
 
-export function writeStructure(data, mode) {
+export function parseStructure(data, mode) {
   let structure;
   
   if (mode === 'snbt') structure = snbt.encode(null, snbt.parse(data));
-  else structure = nbt.writeUncompressed(JSON.parse(data), 'little');
-  
+  else structure = nbt.writeUncompressed(data, 'little');
+  return structure;
+}
+
+export function writeStructure(data, mode) {
+  const structure = parseStructure(data, mode);
   const blob = new Blob([ structure ]);
   const url = window.URL.createObjectURL(blob);
   return url;
@@ -25,15 +29,18 @@ export function createItem(typeId = '') {
       type: "compound",
       value: {
         display: {
+          
           type: "compound",
           value: {
+            /*
             Lore: {
               type: "list",
               value: { type: "string", value: [] }
             },
             Name: { type: "string", value: "" }
+            */
           }
-        },
+        },/*
         ench: {
           type: "list",
           value: {
@@ -44,7 +51,7 @@ export function createItem(typeId = '') {
         Unbreakable: {
           type: "byte",
           value: 0
-        }
+        }*/
       }
     }
   }
