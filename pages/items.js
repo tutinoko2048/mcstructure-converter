@@ -7,7 +7,6 @@ import template from '../src/chest_structure.json';
 import { Divider, List, IconButton, Button, TextField as MuiTextField, Typography, Switch, Select, MenuItem } from '@mui/material';
 import { Accordion, AccordionSummary } from '../src/components/Accordion';
 import { useSnackbar } from '../src/snackbar/Snackbar';
-//import Editor from 'jsoneditor';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from "@mui/icons-material/Close";
@@ -275,7 +274,7 @@ function exportStructure(data) {
     a.download = `${fileName.value}.mcstructure`;
     a.click();
   } catch (e) {
-    showSnackbar(String(e), 'error');
+    alert(String(e));
   }
 }
 
