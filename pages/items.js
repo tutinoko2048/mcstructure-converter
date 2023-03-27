@@ -7,6 +7,7 @@ import template from '../src/chest_structure.json';
 import { Divider, List, IconButton, Button, TextField as MuiTextField, Typography, Switch, Select, MenuItem } from '@mui/material';
 import { Accordion, AccordionSummary } from '../src/components/Accordion';
 import { useSnackbar } from '../src/snackbar/Snackbar';
+//import Editor from 'jsoneditor';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from "@mui/icons-material/Close";
@@ -61,7 +62,6 @@ export default function ItemGenerator() {
   const itemList = block_entity_data.value.Items.value;
   
   const { showSnackbar } = useSnackbar();
-  
   const [ expand, setExpand ] = React.useState(false);
   const [ items, setItems ] = React.useState([ createItem('minecraft:diamond') ]);
   
@@ -103,7 +103,14 @@ export default function ItemGenerator() {
     items[i].tag.value.ench = enchants.length ? nbt.list(nbt.comp(enchants)) : undefined;
     setItems([...items]);
   }
-
+  
+  React.useEffect(() => {
+    setItems(items.map((item, i) => {
+      item.Slot.value = i;
+      return item;
+    }));
+  }, [ items.length ])
+  
   const createPanel = () => {
     return items.map((item, i) => {
       const itemId = item.Name.value;
@@ -246,22 +253,30 @@ export default function ItemGenerator() {
         
       <br/>
       <Divider/>
-      <div id="debug"/>
       
+      <br/>
       <h4>Debug view</h4>
-      {generateTree(items)}
       
+      <div id="debug"></div>
+      {generateTree(items)}
+      <br/>
+      <a href="https://github.com/tutinoko2048/mcstructure-converter">Github</a>
+      <br/>
     </main>
     </>
   )
 }
 
 function exportStructure(data) {
-  const fileName = document.getElementById('fileName');
-  const a = document.createElement('a');
-  a.href = writeStructure(data);
-  a.download = `${fileName.value}.mcstructure`;
-  a.click();
+  try {
+    const fileName = document.getElementById('fileName');
+    const a = document.createElement('a');
+    a.href = writeStructure(data);
+    a.download = `${fileName.value}.mcstructure`;
+    a.click();
+  } catch (e) {
+    showSnackbar(String(e), 'error');
+  }
 }
 
 function exportJson(data) {
