@@ -1,0 +1,376 @@
+{
+  "type": "compound",
+  "name": "",
+  "value": {
+    "format_version": {
+      "type": "int",
+      "value": 1
+    },
+    "size": {
+      "type": "list",
+      "value": {
+        "type": "int",
+        "value": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    "structure": {
+      "type": "compound",
+      "value": {
+        "block_indices": {
+          "type": "list",
+          "value": {
+            "type": "list",
+            "value": [
+              {
+                "type": "int",
+                "value": [
+                  0
+                ]
+              },
+              {
+                "type": "int",
+                "value": [
+                  -1
+                ]
+              }
+            ]
+          }
+        },
+        "entities": {
+          "type": "list",
+          "value": {
+            "type": "compound",
+            "value": [
+              {
+                "Age": {
+                  "type": "short",
+                  "value": 181
+                },
+                "Chested": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "Color": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "Color2": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "FallDistance": {
+                  "type": "float",
+                  "value": 0
+                },
+                "Fire": {
+                  "type": "short",
+                  "value": 0
+                },
+                "Health": {
+                  "type": "short",
+                  "value": 5
+                },
+                "Invulnerable": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsAngry": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsAutonomous": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsBaby": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsEating": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsGliding": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsGlobal": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsIllagerCaptain": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsOrphaned": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsOutOfControl": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsRoaring": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsScared": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsStunned": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsSwimming": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsTamed": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "IsTrusting": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "Item": {
+                  "type": "compound",
+                  "value": {
+                    "Count": {
+                      "type": "byte",
+                      "value": 1
+                    },
+                    "Damage": {
+                      "type": "short",
+                      "value": 0
+                    },
+                    "Name": {
+                      "type": "string",
+                      "value": "minecraft:diamond_pickaxe"
+                    },
+                    "WasPickedUp": {
+                      "type": "byte",
+                      "value": 0
+                    },
+                    "tag": {
+                      "type": "compound",
+                      "value": {
+                        "Damage": {
+                          "type": "int",
+                          "value": 0
+                        },
+                        "ench": {
+                          "type": "list",
+                          "value": {
+                            "type": "compound",
+                            "value": [
+                              {
+                                "id": {
+                                  "type": "short",
+                                  "value": 17
+                                },
+                                "lvl": {
+                                  "type": "short",
+                                  "value": 3
+                                }
+                              },
+                              {
+                                "id": {
+                                  "type": "short",
+                                  "value": 15
+                                },
+                                "lvl": {
+                                  "type": "short",
+                                  "value": 5
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "LastDimensionId": {
+                  "type": "int",
+                  "value": 0
+                },
+                "LootDropped": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "MarkVariant": {
+                  "type": "int",
+                  "value": 0
+                },
+                "Motion": {
+                  "type": "list",
+                  "value": {
+                    "type": "float",
+                    "value": [
+                      7.873832608053938e-14,
+                      0,
+                      -1.132556030837735e-13
+                    ]
+                  }
+                },
+                "OnGround": {
+                  "type": "byte",
+                  "value": 1
+                },
+                "OwnerID": {
+                  "type": "long",
+                  "value": [
+                    -1,
+                    1
+                  ]
+                },
+                "OwnerNew": {
+                  "type": "long",
+                  "value": [
+                    -1,
+                    1
+                  ]
+                },
+                "PortalCooldown": {
+                  "type": "int",
+                  "value": 0
+                },
+                "Pos": {
+                  "type": "list",
+                  "value": {
+                    "type": "float",
+                    "value": [
+                      312.4868469238281,
+                      71.125,
+                      -81.29350280761719
+                    ]
+                  }
+                },
+                "Rotation": {
+                  "type": "list",
+                  "value": {
+                    "type": "float",
+                    "value": [
+                      161.54525756835938,
+                      89.90109252929688
+                    ]
+                  }
+                },
+                "Saddled": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "Sheared": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "ShowBottom": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "Sitting": {
+                  "type": "byte",
+                  "value": 0
+                },
+                "SkinID": {
+                  "type": "int",
+                  "value": 0
+                },
+                "Strength": {
+                  "type": "int",
+                  "value": 0
+                },
+                "StrengthMax": {
+                  "type": "int",
+                  "value": 0
+                },
+                "Tags": {
+                  "type": "list",
+                  "value": {
+                    "type": "end",
+                    "value": []
+                  }
+                },
+                "UniqueID": {
+                  "type": "long",
+                  "value": [
+                    -19,
+                    9
+                  ]
+                },
+                "Variant": {
+                  "type": "int",
+                  "value": 0
+                },
+                "definitions": {
+                  "type": "list",
+                  "value": {
+                    "type": "end",
+                    "value": []
+                  }
+                },
+                "identifier": {
+                  "type": "string",
+                  "value": "minecraft:item"
+                }
+              }
+            ]
+          }
+        },
+        "palette": {
+          "type": "compound",
+          "value": {
+            "default": {
+              "type": "compound",
+              "value": {
+                "block_palette": {
+                  "type": "list",
+                  "value": {
+                    "type": "compound",
+                    "value": [
+                      {
+                        "name": {
+                          "type": "string",
+                          "value": "minecraft:air"
+                        },
+                        "states": {
+                          "type": "compound",
+                          "value": {}
+                        },
+                        "version": {
+                          "type": "int",
+                          "value": 17879555
+                        }
+                      }
+                    ]
+                  }
+                },
+                "block_position_data": {
+                  "type": "compound",
+                  "value": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "structure_world_origin": {
+      "type": "list",
+      "value": {
+        "type": "int",
+        "value": [
+          312,
+          71,
+          -82
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "type": "compound",
+  "name": "",
+  "value": {
+    "format_version": {
+      "type": "int",
+      "value": 1
+    },
+    "size": {
+      "type": "list",
+      "value": {
+        "type": "int",
+        "value": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    "structure": {
+      "type": "compound",
+      "value": {
+        "block_indices": {
+          "type": "list",
+          "value": {
+            "type": "list",
+            "value": [
+              {
+                "type": "int",
+                "value": [
+                  0
+                ]
+              },
+              {
+                "type": "int",
+                "value": [
+                  -1
+                ]
+              }
+            ]
+          }
+        },
+        "entities": {
+          "type": "list",
+          "value": {
+            "type": "end",
+            "value": []
+          }
+        },
+        "palette": {
+          "type": "compound",
+          "value": {
+            "default": {
+              "type": "compound",
+              "value": {
+                "block_palette": {
+                  "type": "list",
+                  "value": {
+                    "type": "compound",
+                    "value": [
+                      {
+                        "name": {
+                          "type": "string",
+                          "value": "minecraft:chest"
+                        },
+                        "states": {
+                          "type": "compound",
+                          "value": {
+                            "facing_direction": {
+                              "type": "int",
+                              "value": 3
+                            }
+                          }
+                        },
+                        "version": {
+                          "type": "int",
+                          "value": 17959425
+                        }
+                      }
+                    ]
+                  }
+                },
+                "block_position_data": {
+                  "type": "compound",
+                  "value": {
+                    "0": {
+                      "type": "compound",
+                      "value": {
+                        "block_entity_data": {
+                          "type": "compound",
+                          "value": {
+                            "Findable": {
+                              "type": "byte",
+                              "value": 0
+                            },
+                            "Items": {
+                              "type": "list",
+                              "value": {
+                                "type": "compound",
+                                "value": [
+                                  {
+                                    "Count": {
+                                      "type": "byte",
+                                      "value": 1
+                                    },
+                                    "Damage": {
+                                      "type": "short",
+                                      "value": 0
+                                    },
+                                    "Name": {
+                                      "type": "string",
+                                      "value": "minecraft:diamond_sword"
+                                    },
+                                    "Slot": {
+                                      "type": "byte",
+                                      "value": 0
+                                    },
+                                    "WasPickedUp": {
+                                      "type": "byte",
+                                      "value": 0
+                                    },
+                                    "tag": {
+                                      "type": "compound",
+                                      "value": {
+                                        
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "id": {
+                              "type": "string",
+                              "value": "Chest"
+                            },
+                            "isMovable": {
+                              "type": "byte",
+                              "value": 1
+                            },
+                            "x": {
+                              "type": "int",
+                              "value": 1036
+                            },
+                            "y": {
+                              "type": "int",
+                              "value": 52
+                            },
+                            "z": {
+                              "type": "int",
+                              "value": -1002
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "structure_world_origin": {
+      "type": "list",
+      "value": {
+        "type": "int",
+        "value": [
+          1036,
+          52,
+          -1002
+        ]
+      }
+    }
+  }
+}
