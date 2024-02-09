@@ -3,19 +3,37 @@ import * as snbt from 'nbt-ts';
 
 export * from './EnchantmentTypes';
 
-export function parseStructure(data, mode) {
-  let structure;
-  
-  if (mode === 'snbt') structure = snbt.encode(null, snbt.parse(data));
-  else structure = nbt.writeUncompressed(data, 'little');
-  return structure;
+export function parseStructure(data, mode, isLevelDat) {
+  let rawData = nbt.writeUncompressed(data, 'little');
+  if (isLevelDat) {
+    rawData = fixLevelDat(rawData);
+  }
+  return rawData;
 }
 
-export function writeStructure(data, mode) {
-  const structure = parseStructure(data, mode);
+export function writeStructure(data, mode, isLevelDat) {
+  const structure = parseStructure(data, mode, isLevelDat);
   const blob = new Blob([ structure ]);
   const url = window.URL.createObjectURL(blob);
   return url;
+}
+
+/** 
+ * Add extra 8 bytes as header
+ * @param {Buffer} dat
+ */
+function fixLevelDat(dat) {
+  // file type
+  const fileType = 10;
+  const fileTypeData = Buffer.alloc(4, 0);
+  fileTypeData.writeInt32LE(fileType);
+
+  // size of level.dat
+  const sizeData = Buffer.alloc(4, 0);
+  sizeData.writeInt32LE(dat.byteLength);
+
+  // merge it
+  return Buffer.concat([fileTypeData, sizeData, dat]);
 }
 
 export function createItem(typeId = '') {

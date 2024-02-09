@@ -7,7 +7,7 @@ import { useSnackbar } from '../src/snackbar/Snackbar';
 import Header from './Header';
 import { writeStructure } from '../src/nbt';
 
-import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, ToggleButton, Checkbox, FormGroup } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
@@ -24,6 +24,7 @@ export default function Home() {
   const [ selection, setSelection ] = React.useState('structure');
   const [ fileName, setFileName ] = React.useState('generated.mcstructure');
   const [ isError, setError ] = React.useState(false);
+  const [ isLevelDatMode, setLevelDatMode ] = React.useState(false);
   const { showSnackbar } = useSnackbar();
   
   const handleCopy = () => {
@@ -39,7 +40,7 @@ export default function Home() {
   
   const handleGenerate = () => {
     try {
-      generateStructure(selection);
+      generateStructure(selection, isLevelDatMode);
     } catch(e) {
       showSnackbar(String(e), 'error');
     }
@@ -77,6 +78,7 @@ export default function Home() {
     if (selection === 'structure') {
       reader.addEventListener('load', () => loadStructure(reader.result, file.name));
       reader.readAsArrayBuffer(file);
+      if (file.name === 'level.dat' || file.name === 'level.dat_old') setLevelDatMode(true);
       
     } else if (selection === 'json') {
       reader.addEventListener('load', () => loadText(reader.result, file.name));
@@ -110,23 +112,26 @@ export default function Home() {
   const dropZoneStyle = React.useMemo(() => (
     { ...(isDragActive ? borderDragStyle : borderNormalStyle) }
   ), [isDragActive]);
+
+  const LevelDatCheckBox = () => (
+    <Checkbox size="small" onChange={(e) => setLevelDatMode(e.target.checked)} checked={isLevelDatMode} />
+  );
   
   const TypeSelector = React.memo(function Selector() {
     return (
       <FormControl>
-        <FormLabel>Type</FormLabel>
+        <FormLabel>Input Type</FormLabel>
         <RadioGroup defaultValue="structure" value={selection} onChange={handleSelect} id="select" row>
           <FormControlLabel value="structure" control={<Radio/>} label="structure"/>
           <FormControlLabel value="json" control={<Radio/>} label="JSON" />
         </RadioGroup>
+        <FormGroup>
+          <FormControlLabel control={<LevelDatCheckBox />} label="level.dat mode"/>
+        </FormGroup>
       </FormControl>
     )
   }, [selection]);
-  
-  const FileNameEdit = () => (
-    <TextField id="fileName" label="File name" variant="outlined" size="small" value={fileName} />
-  );
-  
+    
   const GenerateButton = () => (
     <Button variant="contained" onClick={handleGenerate} startIcon={<IosShareIcon/>} style={{ marginTop: '0.5rem'}}>
       Generate
@@ -154,7 +159,7 @@ export default function Home() {
           <input {...getInputProps()} />
           <Button variant="contained" component="label" startIcon={<FileOpenIcon/>} onClick={open}>
             Select
-          </Button>
+          </Button><br/>
         </div>
       </fieldset><br/>
 
@@ -173,7 +178,7 @@ export default function Home() {
       <br/>
       <fieldset className={styles.fieldset} id="result">
         <div className={styles.form}>
-          <FileNameEdit/><br/>
+          <FileNameEdit value={fileName} onChange={(e) => setFileName(e.target.value)} /><br/>
           <GenerateButton/>
         </div>
       </fieldset><br/>
@@ -185,14 +190,18 @@ export default function Home() {
   )
 }
 
+const FileNameEdit = (props) => (
+  <TextField id="fileName" label="File name" variant="outlined" size="small" value={props.value} onChange={props.onChange} />
+)
+
 function clearPreview() {
   document.getElementById('preview').value = '';
 }
 
-function generateStructure(selection) {
+function generateStructure(selection, isLevelDat) {
   const data = document.getElementById('preview').value;
   if (!data) throw Error('Please put valid JSON');
-  const url = writeStructure(JSON.parse(data), selection);
+  const url = writeStructure(JSON.parse(data), selection, isLevelDat);
   const a = document.createElement('a');
   a.href = url;
   a.download = document.getElementById('fileName').value;
