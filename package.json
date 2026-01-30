@@ -9,20 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.5",
-    "@emotion/server": "^11.10.0",
-    "@emotion/styled": "^11.10.5",
-    "@mui/icons-material": "^5.11.0",
-    "@mui/material": "^5.11.7",
+    "@emotion/react": "^11.14.0",
+    "@emotion/server": "^11.11.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^5.18.0",
+    "@mui/material": "^5.18.0",
     "@next/font": "13.1.1",
     "eslint": "8.30.0",
     "eslint-config-next": "13.1.1",
-    "nbt-ts": "^1.3.5",
-    "next": "13.5.4",
-    "prismarine-nbt": "^2.2.1",
+    "nbt-ts": "^1.3.6",
+    "next": "^13.5.11",
+    "prismarine-nbt": "^2.8.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-dropzone": "^14.2.3"
+    "react-dropzone": "^14.4.0"
   },
   "packageManager": "pnpm@10.23.0",
   "devEngines": {
