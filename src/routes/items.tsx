@@ -88,7 +88,7 @@ function ItemGenerator() {
             Item generator
           </Typography>
           <Typography color="text.secondary">
-            チェストに格納するアイテムを編集し、構造ファイルまたは JSON として保存できます。
+            Edit the items to be stored in the chest:
           </Typography>
         </Box>
         <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 } }}>
